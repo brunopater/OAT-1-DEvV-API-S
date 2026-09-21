@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estante Gamer — Biblioteca de Jogos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07090e;
+  --surface: #0f1420;
+  --surface-card: #141c2e;
+  --border: #222f47;
+  --border-focus: #6366f1;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --accent: #8b5cf6;
+  --accent-glow: rgba(139, 92, 246, 0.35);
+  --cyan: #22d3ee;
+  --green: #10b981;
+  --yellow: #f59e0b;
+  --purple: #a855f7;
+  --red: #ef4444;
+  --gold: #fbbf24;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: 
+    radial-gradient(circle at 10% 0%, rgba(99, 102, 241, 0.18) 0%, transparent 35%),
+    radial-gradient(circle at 90% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.12) 0%, transparent 50%),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+}
+
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* Header & Stats */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand h1 {
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: -0.04em;
+  background: linear-gradient(120deg, #ffffff 20%, #c084fc 60%, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: #c084fc;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 10px;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
+.stats-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  background: rgba(15, 20, 32, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 18px;
+  display: flex;
+  flex-direction: column;
+  min-width: 95px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Controls & Toolbar */
+.btn {
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 12px 22px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.92rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.5);
+  filter: brightness(1.1);
+}
+
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--muted);
+}
+
+.toolbar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 16px;
+  background: rgba(15, 20, 32, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+#busca { flex: 1 1 280px; }
+
+input, select {
+  background: rgba(7, 9, 14, 0.8);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 12px 16px;
+  border-radius: 10px;
+  outline: none;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="file"] {
+  padding: 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: rgba(7, 9, 14, 0.8);
+  border: 1px dashed var(--border);
+  cursor: pointer;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 10px;
+}
+
+input:focus, select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* Painel de Formulário */
+#painel-form {
+  display: none;
+  background: rgba(18, 25, 41, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 36px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.15);
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#painel-form.aberto { display: block; }
+#painel-form h2 { margin: 0 0 20px; font-size: 1.5rem; font-weight: 800; color: #fff; }
+
+.campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.campo label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.campo input, .campo select { width: 100%; }
+
+.divisor-ou {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+  margin: 6px 0;
+  display: block;
+  font-weight: 600;
+}
+
+.form-acoes { display: flex; gap: 12px; margin-top: 24px; }
+
+/* Grid e Cards de Jogos */
+#grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.ficha {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  overflow: hidden;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ficha:hover {
+  transform: translateY(-6px);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 24px rgba(139, 92, 246, 0.2);
+}
+
+.capa-jogo {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #0b101d;
+  margin-bottom: 14px;
+}
+
+.capa-jogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.ficha:hover .capa-jogo img {
+  transform: scale(1.06);
+}
+
+.capa-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  color: #e2e8f0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e1b4b, #0f172a);
+}
+
+.selo {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 5px 10px;
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 2;
+}
+
+.selo.zerado { color: #34d399; background: rgba(16, 185, 129, 0.3); border: 1px solid rgba(52, 211, 153, 0.5); }
+.selo.jogando { color: #fbbf24; background: rgba(245, 158, 11, 0.3); border: 1px solid rgba(251, 191, 36, 0.5); }
+.selo.na-fila { color: #c084fc; background: rgba(168, 85, 247, 0.3); border: 1px solid rgba(192, 132, 252, 0.5); }
+.selo.abandonado { color: #f87171; background: rgba(239, 68, 68, 0.3); border: 1px solid rgba(248, 113, 113, 0.5); }
+
+.ficha-titulo {
+  margin: 4px 0 10px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.6em;
+}
+
+.ficha-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.pill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--muted);
+}
+
+.ficha-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.nota {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--yellow);
+}
+
+.nota.perfeita {
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.nota span {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-shadow: none;
+}
+
+.ficha-acoes { display: flex; gap: 6px; }
+
+.btn-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover {
+  background: rgba(139, 92, 246, 0.25);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn-icon.danger:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+#vazio {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+  border-radius: 20px;
+  background: rgba(15, 20, 32, 0.4);
+}
+
+#vazio strong { display: block; color: var(--text); font-size: 1.2rem; margin-bottom: 8px; }
+
+@media (max-width: 640px) {
+  .wrap { padding: 24px 16px 48px; }
+  header { flex-direction: column; align-items: flex-start; }
+  .stats-bar { width: 100%; justify-content: space-between; }
+  #grade { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <h1>Estante Gamer</h1>
+      <div class="brand-badge"><span>❖</span> Catálogo de Jogos</div>
+    </div>
+    
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-value" id="stat-total">0</span>
+        <span class="stat-label">Total</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="stat-zerados" style="color: var(--green);">0</span>
+        <span class="stat-label">Zerados</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="stat-jogando" style="color: var(--yellow);">0</span>
+        <span class="stat-label">Jogando</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="stat-fila" style="color: var(--purple);">0</span>
+        <span class="stat-label">Na Fila</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-primary" id="btn-novo" type="button">+ Novo Jogo</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <input type="text" id="busca" placeholder="🔍 Buscar por título...">
+    <select id="filtro-status">
+      <option value="">Todos os status</option>
+      <option value="Zerado">Zerado</option>
+      <option value="Jogando">Jogando</option>
+      <option value="Na fila">Na fila</option>
+      <option value="Abandonado">Abandonado</option>
+    </select>
+    <select id="filtro-plataforma">
+      <option value="">Todas as plataformas</option>
+    </select>
+  </div>
+
+  <section id="painel-form">
+    <h2 id="form-titulo">Nova Ficha</h2>
+    <form id="form-jogo">
+      <input type="hidden" id="jogo-id">
+      <div class="campos">
+        <div class="campo">
+          <label for="campo-titulo">Título do Jogo</label>
+          <input type="text" id="campo-titulo" required placeholder="Ex: God of War">
+        </div>
+        <div class="campo">
+          <label for="campo-plataforma">Plataforma</label>
+          <input type="text" id="campo-plataforma" required placeholder="Ex: PS5, PC, Switch">
+        </div>
+        <div class="campo">
+          <label for="campo-genero">Gênero</label>
+          <input type="text" id="campo-genero" required placeholder="Ex: RPG, Survival Horror">
+        </div>
+        <div class="campo">
+          <label for="campo-status">Status</label>
+          <select id="campo-status">
+            <option>Zerado</option>
+            <option>Jogando</option>
+            <option>Na fila</option>
+            <option>Abandonado</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="campo-nota">Nota (0–10)</label>
+          <input type="number" id="campo-nota" min="0" max="10" step="1" required>
+        </div>
+        
+        <!-- Seleção de Capa: Arquivo Local ou URL -->
+        <div class="campo">
+          <label for="campo-capa-arquivo">Capa do Jogo</label>
+          <input type="file" id="campo-capa-arquivo" accept="image/*">
+          <span class="divisor-ou">— ou cole um link web —</span>
+          <input type="url" id="campo-capa" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="form-acoes">
+        <button type="submit" class="btn btn-primary" id="btn-salvar">Salvar Ficha</button>
+        <button type="button" class="btn btn-ghost" id="btn-cancelar">Cancelar</button>
+      </div>
+    </form>
+  </section>
+
+  <div id="grade"></div>
+  <div id="vazio" style="display:none">
+    <strong>Nenhum jogo encontrado</strong>
+    Ajuste a busca ou os filtros para localizar suas fichas.
+  </div>
+
+</div>
+
+<script>
+/* ==========================================================
+   "BACK-END": Funções CRUD operando sobre um Array com LocalStorage
+   ========================================================== */
+
+const jogosBase = [
+  { titulo:"The Legend of Zelda: Breath of the Wild", plataforma:"Nintendo Switch", genero:"Ação/Aventura", status:"Zerado", nota:9, imagem:"https://upload.wikimedia.org/wikipedia/en/c/c6/The_Legend_of_Zelda_Breath_of_the_Wild.jpg" },
+  { titulo:"Resident Evil Requiem", plataforma:"PS5 / PC", genero:"Survival Horror", status:"Zerado", nota:10, imagem:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMB_DPwnfTY3OMWDCFCiwyeQRt8iatrEKRBnTtOYoJaw&s=10" },
+  { titulo:"Resident Evil 4", plataforma:"PS4", genero:"Survival Horror", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/254700/library_600x900.jpg" },
+  { titulo:"Resident Evil 4 Remake", plataforma:"PS5", genero:"Survival Horror", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/2050650/library_600x900.jpg" },
+  { titulo:"Resident Evil 7", plataforma:"PS4", genero:"Survival Horror", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/418370/library_600x900.jpg" },
+  { titulo:"Resident Evil 8: Village", plataforma:"PS5", genero:"Survival Horror", status:"Zerado", nota:9, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/1196590/library_600x900.jpg" },
+  { titulo:"Cyberpunk 2077", plataforma:"PC", genero:"RPG/Ação", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/1091500/library_600x900.jpg" },
+  { titulo:"The Last of Us Part I", plataforma:"PS5", genero:"Ação/Aventura", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/1888930/library_600x900.jpg" },
+  { titulo:"The Last of Us Part II", plataforma:"PS4", genero:"Ação/Aventura", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/2531310/library_600x900.jpg" },
+  { titulo:"Marvel's Spider-Man", plataforma:"PS4", genero:"Ação/Aventura", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/1817070/library_600x900.jpg" },
+  { titulo:"Marvel's Spider-Man 2", plataforma:"PS5", genero:"Ação/Aventura", status:"Na fila", nota:0, imagem:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4rvUfKwIVw7iuJMCYooITwXwCSF7ZheVkafcha2hVig&s=10" },
+  { titulo:"Batman: Arkham Asylum", plataforma:"PC / PS3 / Xbox 360", genero:"Ação/Aventura", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/35140/library_600x900.jpg" },
+  { titulo:"Batman: Arkham City", plataforma:"PC / PS3 / Xbox 360", genero:"Ação/Aventura", status:"Zerado", nota:8, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/200260/library_600x900.jpg" },
+  { titulo:"Batman: Arkham Origins", plataforma:"PC / PS3 / Xbox 360", genero:"Ação/Aventura", status:"Zerado", nota:9, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/209000/library_600x900.jpg" },
+  { titulo:"Batman: Arkham Knight", plataforma:"PC / PS4 / Xbox One", genero:"Ação/Aventura", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/208650/library_600x900.jpg" },
+  { titulo:"Days Gone", plataforma:"PS4", genero:"Ação/Aventura", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/1259420/library_600x900.jpg" },
+  { titulo:"Bloodborne", plataforma:"PS4", genero:"Souls-like", status:"Zerado", nota:10, imagem:"https://upload.wikimedia.org/wikipedia/en/6/68/Bloodborne_Cover_Wallpaper.jpg" },
+  { titulo:"Super Mario Odyssey", plataforma:"Nintendo Switch", genero:"Plataforma", status:"Zerado", nota:8, imagem:"https://upload.wikimedia.org/wikipedia/en/8/8d/Super_Mario_Odyssey.jpg" },
+  { titulo:"Silent Hill 2 (Remake)", plataforma:"PS5", genero:"Survival Horror", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/2124490/library_600x900.jpg" },
+  { titulo:"Alan Wake", plataforma:"PC", genero:"Ação/Suspense", status:"Zerado", nota:7, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/108710/library_600x900.jpg" },
+  { titulo:"Alan Wake 2", plataforma:"PS5", genero:"Ação/Suspense", status:"Zerado", nota:9, imagem:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrNH09NDrSKbVN2tOruAWyebreMsrDn6fniuRrbdERcQ&s" },
+  { titulo:"Manhunt", plataforma:"PS2", genero:"Ação/Terror", status:"Zerado", nota:8, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/12130/library_600x900.jpg" },
+  { titulo:"Red Dead Redemption", plataforma:"PS4", genero:"Ação/Aventura", status:"Zerado", nota:8, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/2668510/library_600x900.jpg" },
+  { titulo:"Red Dead Redemption 2", plataforma:"PS4", genero:"Ação/Aventura", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/1174180/library_600x900.jpg" },
+  { titulo:"God of War 3", plataforma:"PS3 / PS4", genero:"Hack and Slash", status:"Zerado", nota:10, imagem:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSXjtICHBZ4dVYde0uKV09Xz5sTz0df87z02gS2BNvQQ&s=10" },
+  { titulo:"God of War (2018)", plataforma:"PS4 / PC", genero:"Ação/Aventura", status:"Zerado", nota:10, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/1593500/library_600x900.jpg" },
+  { titulo:"God of War Ragnarök", plataforma:"PS5 / PC", genero:"Ação/Aventura", status:"Zerado", nota:9, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/2322010/library_600x900.jpg" },
+  { titulo:"Assassin's Creed Valhalla", plataforma:"PC / PS5", genero:"RPG/Ação", status:"Jogando", nota:8, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/2208920/library_600x900.jpg" },
+  { titulo:"Hades", plataforma:"PC / Switch", genero:"Rogue-like", status:"Na fila", nota:0, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/1145360/library_600x900.jpg" },
+  { titulo:"Hades II", plataforma:"PC", genero:"Rogue-like", status:"Na fila", nota:0, imagem:"https://cdn.akamai.steamstatic.com/steam/apps/1145350/library_600x900.jpg" },
+  { titulo:"Marvel's Wolverine", plataforma:"PS5", genero:"Ação/Aventura", status:"Na fila", nota:0, imagem:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqw3D7blHIGYC579HdG6pvP7zdzD6ht6x7NFoLERkvWQ&s=10" },
+  { titulo:"The Legend of Zelda: Tears of the Kingdom", plataforma:"Nintendo Switch", genero:"Ação/Aventura", status:"Na fila", nota:0, imagem:"https://upload.wikimedia.org/wikipedia/en/f/fb/The_Legend_of_Zelda_Tears_of_the_Kingdom_cover.jpg" },
+  { titulo:"Mortal Kombat 1", plataforma:"PC / PS5", genero:"Luta", status:"Na fila", nota:0, imagem:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCfyw90vLT5ylu-meowIoZitJabiWxX3Rm5klFctfXSA&s=10" },
+  { titulo:"Metal Gear Solid 4: Guns of the Patriots", plataforma:"PS3", genero:"Stealth / Ação", status:"Na fila", nota:0, imagem:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTst8loICq-d7SWs0anrD0CgaByBh3A61t_ImRlsTc-QA&s=10" },
+  { titulo:"Silent Hill f", plataforma:"PC / PS5", genero:"Survival Horror", status:"Na fila", nota:0, imagem:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbVaRnHXCxX0g-QnSzz-q2iwwjNhrPI_Oeokrt6Q_OBw&s=10" }
+];
+
+// Inicialização com suporte a LocalStorage (versão v2 para forçar a atualização das novas capas)
+function carregarJogosIniciais() {
+  const salvos = localStorage.getItem('estante_jogos_db_v2');
+  if (salvos) {
+    return JSON.parse(salvos);
+  }
+  return jogosBase.map((jogo, indice) => ({ id: indice + 1, ...jogo }));
+}
+
+let jogos = carregarJogosIniciais();
+let proximoId = jogos.length > 0 ? Math.max(...jogos.map(j => j.id)) + 1 : 1;
+
+function salvarLocalStorage() {
+  localStorage.setItem('estante_jogos_db_v2', JSON.stringify(jogos));
+}
+
+// CREATE
+function createGame(dados) {
+  const novoJogo = {
+    id: proximoId++,
+    titulo: dados.titulo.trim(),
+    plataforma: dados.plataforma.trim(),
+    genero: dados.genero.trim(),
+    status: dados.status,
+    nota: Number(dados.nota),
+    imagem: dados.imagem || ""
+  };
+  jogos.push(novoJogo);
+  salvarLocalStorage();
+  return novoJogo;
+}
+
+// READ
+function readGames(filtros = {}) {
+  return jogos.filter((jogo) => {
+    const bateTexto = filtros.texto
+      ? jogo.titulo.toLowerCase().includes(filtros.texto.toLowerCase())
+      : true;
+    const bateStatus = filtros.status ? jogo.status === filtros.status : true;
+    const batePlataforma = filtros.plataforma ? jogo.plataforma === filtros.plataforma : true;
+    return bateTexto && bateStatus && batePlataforma;
+  });
+}
+
+// UPDATE
+function updateGame(id, dados) {
+  const jogo = jogos.find((j) => j.id === Number(id));
+  if (!jogo) return null;
+  jogo.titulo = dados.titulo.trim();
+  jogo.plataforma = dados.plataforma.trim();
+  jogo.genero = dados.genero.trim();
+  jogo.status = dados.status;
+  jogo.nota = Number(dados.nota);
+  jogo.imagem = dados.imagem || "";
+  salvarLocalStorage();
+  return jogo;
+}
+
+// DELETE
+function deleteGame(id) {
+  const indice = jogos.findIndex((j) => j.id === Number(id));
+  if (indice === -1) return false;
+  jogos.splice(indice, 1);
+  salvarLocalStorage();
+  return true;
+}
+
+/* ==========================================================
+   "FRONT-END"
+   ========================================================== */
+const grade = document.getElementById('grade');
+const vazio = document.getElementById('vazio');
+const painelForm = document.getElementById('painel-form');
+const formJogo = document.getElementById('form-jogo');
+const formTitulo = document.getElementById('form-titulo');
+const btnNovo = document.getElementById('btn-novo');
+const btnCancelar = document.getElementById('btn-cancelar');
+const campoId = document.getElementById('jogo-id');
+const campoTitulo = document.getElementById('campo-titulo');
+const campoPlataforma = document.getElementById('campo-plataforma');
+const campoGenero = document.getElementById('campo-genero');
+const campoStatus = document.getElementById('campo-status');
+const campoNota = document.getElementById('campo-nota');
+const campoCapa = document.getElementById('campo-capa');
+const campoCapaArquivo = document.getElementById('campo-capa-arquivo');
+const busca = document.getElementById('busca');
+const filtroStatus = document.getElementById('filtro-status');
+const filtroPlataforma = document.getElementById('filtro-plataforma');
+
+// Elementos de Estatística
+const statTotal = document.getElementById('stat-total');
+const statZerados = document.getElementById('stat-zerados');
+const statJogando = document.getElementById('stat-jogando');
+const statFila = document.getElementById('stat-fila');
+
+let imagemBase64Carregada = "";
+
+function classeSelo(status) {
+  return status.toLowerCase().replace(/\s+/g, '-');
+}
+
+function atualizarEstatisticas() {
+  const total = jogos.length;
+  const zerados = jogos.filter(j => j.status === 'Zerado').length;
+  const jogando = jogos.filter(j => j.status === 'Jogando').length;
+  const fila = jogos.filter(j => j.status === 'Na fila').length;
+
+  statTotal.textContent = total;
+  statZerados.textContent = zerados;
+  statJogando.textContent = jogando;
+  statFila.textContent = fila;
+}
+
+function atualizarFiltroPlataformas() {
+  const atual = filtroPlataforma.value;
+  const plataformas = [...new Set(jogos.map((j) => j.plataforma))].sort();
+  filtroPlataforma.innerHTML = '<option value="">Todas as plataformas</option>' +
+    plataformas.map((p) => `<option value="${p}">${p}</option>`).join('');
+  filtroPlataforma.value = plataformas.includes(atual) ? atual : '';
+}
+
+function renderizar() {
+  const lista = readGames({
+    texto: busca.value,
+    status: filtroStatus.value,
+    plataforma: filtroPlataforma.value,
+  });
+
+  atualizarEstatisticas();
+  grade.innerHTML = '';
+
+  if (lista.length === 0) {
+    vazio.style.display = 'block';
+  } else {
+    vazio.style.display = 'none';
+    lista.forEach((jogo) => {
+      const ficha = document.createElement('article');
+      ficha.className = 'ficha';
+      const capa = jogo.imagem
+        ? `<img src="${jogo.imagem}" alt="Capa de ${jogo.titulo}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        : "";
+      
+      const classeNota = jogo.nota === 10 ? "nota perfeita" : "nota";
+
+      ficha.innerHTML = `
+        <div class="capa-jogo">
+          ${capa}
+          <div class="capa-fallback" style="${jogo.imagem ? "display:none" : "display:flex"}">${jogo.titulo}</div>
+          <span class="selo ${classeSelo(jogo.status)}">${jogo.status}</span>
+        </div>
+        <h3 class="ficha-titulo" title="${jogo.titulo}">${jogo.titulo}</h3>
+        <div class="ficha-tags">
+          <span class="pill">${jogo.plataforma}</span>
+          <span class="pill">${jogo.genero}</span>
+        </div>
+        <div class="ficha-rodape">
+          <div class="${classeNota}">${jogo.nota}<span>/10</span></div>
+          <div class="ficha-acoes">
+            <button class="btn-icon" title="Editar" data-editar="${jogo.id}" aria-label="Editar ${jogo.titulo}">✎</button>
+            <button class="btn-icon danger" title="Excluir" data-excluir="${jogo.id}" aria-label="Excluir ${jogo.titulo}">✕</button>
+          </div>
+        </div>
+      `;
+      grade.appendChild(ficha);
+    });
+  }
+  atualizarFiltroPlataformas();
+}
+
+// Leitura do arquivo local via FileReader
+campoCapaArquivo.addEventListener('change', (evento) => {
+  const arquivo = evento.target.files[0];
+  if (arquivo) {
+    const leitor = new FileReader();
+    leitor.onload = function(evt) {
+      imagemBase64Carregada = evt.target.result;
+    };
+    leitor.readAsDataURL(arquivo);
+  } else {
+    imagemBase64Carregada = "";
+  }
+});
+
+function abrirFormulario(jogo = null) {
+  formJogo.reset();
+  imagemBase64Carregada = "";
+
+  if (jogo) {
+    formTitulo.textContent = 'Editar Ficha';
+    campoId.value = jogo.id;
+    campoTitulo.value = jogo.titulo;
+    campoPlataforma.value = jogo.plataforma;
+    campoGenero.value = jogo.genero;
+    campoStatus.value = jogo.status;
+    campoNota.value = jogo.nota;
+    campoCapa.value = jogo.imagem || '';
+  } else {
+    formTitulo.textContent = 'Nova Ficha';
+    campoId.value = '';
+    campoStatus.value = 'Na fila';
+    campoCapa.value = '';
+  }
+  painelForm.classList.add('aberto');
+  campoTitulo.focus();
+}
+
+function fecharFormulario() {
+  painelForm.classList.remove('aberto');
+  formJogo.reset();
+  imagemBase64Carregada = "";
+}
+
+btnNovo.addEventListener('click', () => abrirFormulario());
+btnCancelar.addEventListener('click', fecharFormulario);
+
+formJogo.addEventListener('submit', (evento) => {
+  evento.preventDefault();
+  
+  let imagemFinal = imagemBase64Carregada || campoCapa.value.trim();
+
+  if (!imagemFinal && campoId.value) {
+    const jogoExistente = jogos.find(j => j.id === Number(campoId.value));
+    if (jogoExistente) imagemFinal = jogoExistente.imagem;
+  }
+
+  const dados = {
+    titulo: campoTitulo.value,
+    plataforma: campoPlataforma.value,
+    genero: campoGenero.value,
+    status: campoStatus.value,
+    nota: campoNota.value,
+    imagem: imagemFinal
+  };
+
+  if (campoId.value) {
+    updateGame(campoId.value, dados);
+  } else {
+    createGame(dados);
+  }
+
+  fecharFormulario();
+  renderizar();
+});
+
+grade.addEventListener('click', (evento) => {
+  const idEditar = evento.target.dataset.editar;
+  const idExcluir = evento.target.dataset.excluir;
+
+  if (idEditar) {
+    const jogo = jogos.find((j) => j.id === Number(idEditar));
+    abrirFormulario(jogo);
+  }
+
+  if (idExcluir) {
+    const jogo = jogos.find((j) => j.id === Number(idExcluir));
+    if (confirm(`Remover "${jogo.titulo}" da estante?`)) {
+      deleteGame(idExcluir);
+      renderizar();
+    }
+  }
+});
+
+// Listeners de Busca e Filtros
+busca.addEventListener('input', renderizar);
+filtroStatus.addEventListener('change', renderizar);
+filtroPlataforma.addEventListener('change', renderizar);
+
+// Inicializar aplicação
+renderizar();
+</script>
+</body>
+</html>
